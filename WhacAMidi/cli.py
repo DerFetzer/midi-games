@@ -1,5 +1,6 @@
 from enum import Enum
 import mido
+import numpy as np
 import pygame
 import random
 import threading
@@ -74,6 +75,19 @@ def receive_message(message: mido.Message):
                     outport.send(message.copy(velocity=get_color_rem(new_remaining).value))
 
 
+def rnd_to_delay(rnd: int) -> float:
+    if rnd < 10:
+        return 1
+    elif rnd < 500:
+        m = 0.8600255887271939
+        t = 0.010486791741646434
+        return m * np.exp(-t * rnd) + .2
+    else:
+        a = -0.0002
+        n = 0.3
+        return a * rnd + n
+
+
 inport = mido.open_input(name="open-cleverpad MIDI 1", callback=receive_message)
 
 rnd = 0
@@ -95,7 +109,7 @@ while True:
 
         outport.send(mes)
 
-        if len(active_notes) == 64:
+        if len(active_notes) >= 64:
             s_over.play()
 
             print("Game Over!\nRound: {}".format(rnd))
@@ -106,26 +120,8 @@ while True:
 
             break
 
-    if rnd < 10:
-        time.sleep(1)
-    elif rnd < 30:
-        time.sleep(.8)
-    elif rnd < 70:
-        time.sleep(.6)
-    elif rnd < 140:
-        time.sleep(.4)
-    elif rnd < 240:
-        time.sleep(.3)
-    elif rnd < 300:
-        time.sleep(.25)
-    elif rnd < 500:
-        time.sleep(.2)
-    elif rnd < 800:
-        time.sleep(.15)
-    elif rnd < 1000:
-        time.sleep(.1)
-    else:
-        time.sleep(.05)
+    d = rnd_to_delay(rnd)
+    time.sleep(d)
 
 time.sleep(.2)
 
