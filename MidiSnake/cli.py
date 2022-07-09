@@ -39,6 +39,10 @@ def receive_message(message: mido.Message):
     global direction
     global last_direction
 
+    if message.dict()["channel"] != 0:
+        # reset channel to 0
+        outport.send(mido.Message("control_change", control=111, value=0))
+
     if message.dict()["type"] == 'note_on' and message.dict()["channel"] == 8:
         note = message.dict()["note"]
 
