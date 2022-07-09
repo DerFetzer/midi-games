@@ -9,13 +9,9 @@ import time
 
 class Color(Enum):
     Black = 0
-    White = 16
-    Yellow = 32
-    Aqua = 48
-    Purple = 64
-    Blue = 80
-    Green = 96
-    Red = 112
+    White = 63
+    Yellow = 3 | 3 << 2
+    Red = 3
 
 pygame.init()
 s = pygame.mixer.Sound("/home/derfetzer/sounds_wav/message.wav")

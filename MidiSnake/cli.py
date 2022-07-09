@@ -39,6 +39,8 @@ def receive_message(message: mido.Message):
     global direction
     global last_direction
 
+    print(message)
+
     if message.dict()["channel"] != 0:
         # reset channel to 0
         outport.send(mido.Message("control_change", control=111, value=0))
@@ -79,10 +81,10 @@ while apple_pos in active_notes:
     n = random.randrange(0, 64)
     if n not in active_notes:
         apple_pos = n
-        outport.send(mido.Message("note_on", note=apple_pos, velocity=112))
+        outport.send(mido.Message("note_on", note=apple_pos, velocity=3))
 
 for n in active_notes:
-    outport.send(mido.Message("note_on", note=n, velocity=96))
+    outport.send(mido.Message("note_on", note=n, velocity=3 << 2))
 
 while True:
     with lock:
@@ -126,7 +128,7 @@ while True:
 
             break
 
-        on_mes = mido.Message("note_on", note=on_pad, velocity=96)
+        on_mes = mido.Message("note_on", note=on_pad, velocity=3 << 2)
         off_mes = mido.Message("note_off", note=off_pad)
 
         active_notes.append(on_pad)
@@ -140,7 +142,7 @@ while True:
                 n = random.randrange(0, 64)
                 if n not in active_notes:
                     apple_pos = n
-                    outport.send(mido.Message("note_on", note=apple_pos, velocity=112))
+                    outport.send(mido.Message("note_on", note=apple_pos, velocity=3))
         else:
             outport.send(off_mes)
 
